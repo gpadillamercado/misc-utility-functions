@@ -37,7 +37,6 @@ idx_combos <- function(N) {
 }
 
 
-
 #' Applies a function to a combinations of column indices
 #'
 #' Used in conjuction with `idx_combos`, this takes the data in matrix(-like) form and
@@ -61,3 +60,36 @@ apply2idx <- function(mat, idx, FUN) {
     )
   )
 }
+
+
+#' Faster way to determine if a number is even
+#'
+#' Using bitwise AND to test values that can be coerced into integers.
+#'
+#' @param x A value that can be coerced into an integer.
+#'
+#' @returns A boolean TRUE if `x` is even and FALSE if it is odd.
+is_even <- function(x) {
+  return(!as.logical(bitwAnd(x, 1)))
+}
+
+is_even_mod <- function(x) {
+  return(!as.logical(x %% 2))
+}
+
+
+#' Uses C implementation of bitwise AND to find even numbers (very fast)
+#'
+#' @param x An integer vector. Gets put into an [Rcpp::IntegerVector] data type.
+#'
+#' @returns A logical vector (from [Rcpp::LogicalVector]) that is TRUE if `x` is even OR `NA_integer_`.
+Rcpp::cppFunction("
+  LogicalVector is_even_C(IntegerVector x) {
+    int n = x.size();
+    LogicalVector out(n);
+    for (int i = 0; i < n; ++i) {
+      out[i] = ((x[i] & 1) == 0);
+    }
+    return out;
+  }
+  ") # NOTE: DELETE ANACONDA FROM COMPUTER... IT CONFUSES R IN SEARCH FOR CLANG
