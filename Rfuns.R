@@ -83,13 +83,5 @@ is_even_mod <- function(x) {
 #' @param x An integer vector. Gets put into an [Rcpp::IntegerVector] data type.
 #'
 #' @returns A logical vector (from [Rcpp::LogicalVector]) that is TRUE if `x` is even OR `NA_integer_`.
-Rcpp::cppFunction("
-  LogicalVector is_even_C(IntegerVector x) {
-    int n = x.size();
-    LogicalVector out(n);
-    for (int i = 0; i < n; ++i) {
-      out[i] = ((x[i] & 1) == 0);
-    }
-    return out;
-  }
-  ") # NOTE: DELETE ANACONDA FROM COMPUTER... IT CONFUSES R IN SEARCH FOR CLANG
+Rcpp::sourceCpp(file = "RCfuns.cpp")
+# NOTE: DELETE ANACONDA FROM COMPUTER... IT CONFUSES R IN SEARCH FOR CLANG
